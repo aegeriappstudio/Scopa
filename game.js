@@ -7,9 +7,17 @@
 
 /* ---------- Costanti ---------- */
 const SEMI = ["denari", "coppe", "spade", "bastoni"];
-const SIMBOLO = { denari: "♦", coppe: "♥", spade: "♠", bastoni: "♣" };
 const NOME_SEME = { denari: "Denari", coppe: "Coppe", spade: "Spade", bastoni: "Bastoni" };
 const ETICHETTA = { 1: "A", 8: "F", 9: "C", 10: "R" }; // Asso, Fante, Cavallo, Re
+const NOME_VALORE = { 1: "Asso", 8: "Fante", 9: "Cavallo", 10: "Re" };
+
+// Icone SVG dei quattro semi originali delle carte italiane.
+const SEME_SVG = {
+  denari: `<svg viewBox="0 0 40 40" class="seme-svg"><circle cx="20" cy="20" r="16" fill="#f4d03f" stroke="#a9791b" stroke-width="2"/><circle cx="20" cy="20" r="10.5" fill="none" stroke="#a9791b" stroke-width="1.3"/><path d="M20 11.5l1.9 4.6 5 .35-3.85 3.2 1.25 4.85L20 21.7l-4.3 2.8 1.25-4.85L13.1 16.45l5-.35z" fill="#a9791b"/></svg>`,
+  coppe: `<svg viewBox="0 0 40 40" class="seme-svg"><path d="M10 7h20l-1 5a9 9 0 0 1-18 0z" fill="#cf2a27" stroke="#7a1410" stroke-width="1.4"/><path d="M14 7a6 3 0 0 0 12 0z" fill="#e86a67"/><rect x="18.4" y="20" width="3.2" height="9" fill="#7a1410"/><rect x="11.5" y="30.5" width="17" height="3.2" rx="1.6" fill="#7a1410"/></svg>`,
+  spade: `<svg viewBox="0 0 40 40" class="seme-svg"><path d="M20 3l3.4 6.5v15.5h-6.8V9.5z" fill="#5b8def" stroke="#1e3a8a" stroke-width="1.1"/><path d="M20 3l3.4 6.5h-6.8z" fill="#9bc0ff"/><rect x="11.5" y="25" width="17" height="3.2" rx="1.6" fill="#1e3a8a"/><rect x="18.4" y="28" width="3.2" height="6.5" fill="#1e3a8a"/><circle cx="20" cy="35.5" r="2.6" fill="#1e3a8a"/></svg>`,
+  bastoni: `<svg viewBox="0 0 40 40" class="seme-svg"><g transform="rotate(20 20 20)"><rect x="17" y="11" width="6" height="25" rx="3" fill="#a9743f" stroke="#5a3a1e" stroke-width="1.2"/><path d="M17 22h6M17 28h6" stroke="#5a3a1e" stroke-width="1"/><circle cx="20" cy="9" r="5" fill="#bf8a52" stroke="#5a3a1e" stroke-width="1.2"/><circle cx="15" cy="13" r="2.6" fill="#bf8a52" stroke="#5a3a1e" stroke-width="1"/><circle cx="25" cy="13" r="2.6" fill="#bf8a52" stroke="#5a3a1e" stroke-width="1"/></g></svg>`,
+};
 const PRIMIERA = { 1: 16, 2: 12, 3: 13, 4: 14, 5: 15, 6: 18, 7: 21, 8: 10, 9: 10, 10: 10 };
 
 /* ---------- Stato ---------- */
@@ -120,8 +128,8 @@ function giocaCarta(player, carta, setPresa) {
 }
 
 function descrCarta(c) {
-  const et = ETICHETTA[c.v] || c.v;
-  return `${et}${SIMBOLO[c.seme]}`;
+  const nome = NOME_VALORE[c.v] || c.v;
+  return `${nome} di ${NOME_SEME[c.seme]}`;
 }
 function descrSet(set) {
   return set.map(descrCarta).join(" + ");
@@ -336,9 +344,13 @@ function setMsg(t) { el("messaggio").textContent = t; }
 function cartaHTML(c, classi = "") {
   const et = ETICHETTA[c.v] || c.v;
   const sett = (c.v === 7 && c.seme === "denari") ? " settebello" : "";
-  return `<div class="carta ${c.seme}${sett} ${classi}" data-id="${c.id}">
+  // numero di "pip" (icone del seme) per le carte numeriche 1–7; figure = 1 icona
+  const pip = c.v <= 7 ? c.v : 1;
+  const icone = `<div class="pip-${Math.min(pip, 7)}">${SEME_SVG[c.seme].repeat(pip)}</div>`;
+  const fig = c.v >= 8 ? `<div class="figura">${NOME_VALORE[c.v]}</div>` : "";
+  return `<div class="carta ${c.seme}${sett} ${classi}" data-id="${c.id}" title="${descrCarta(c)}">
       <div class="valore">${et}</div>
-      <div class="seme-big">${SIMBOLO[c.seme]}</div>
+      <div class="centro">${icone}${fig}</div>
       <div class="seme-small">${et}</div>
     </div>`;
 }
