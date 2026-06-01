@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scopa — Gioco di carte italiano</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>🃏 Scopa</h1>
+    <nav class="tabs">
+      <button class="tab active" data-tab="gioco">Gioco</button>
+      <button class="tab" data-tab="risultati">Risultati</button>
+      <button class="tab" data-tab="regole">Regole</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ===================== GIOCO ===================== -->
+    <section id="gioco" class="panel active">
+      <div class="scoreboard">
+        <div class="score-card you">
+          <span class="label">Tu</span>
+          <span id="punti-tu" class="punti">0</span>
+          <span class="dettaglio">Partite: <b id="vinte-tu">0</b></span>
+        </div>
+        <div class="score-mid">
+          <div class="mazzo-info">Mazzo: <b id="mazzo-count">40</b></div>
+          <button id="nuova-partita" class="btn primary">Nuova partita</button>
+        </div>
+        <div class="score-card cpu">
+          <span class="label">Computer</span>
+          <span id="punti-cpu" class="punti">0</span>
+          <span class="dettaglio">Partite: <b id="vinte-cpu">0</b></span>
+        </div>
+      </div>
+
+      <!-- Carte prese dal computer -->
+      <div class="prese-row">
+        <div class="prese">
+          <span class="mini-label">Prese Computer</span>
+          <span class="mini-count" id="prese-cpu-count">0 carte</span>
+          <span class="mini-count" id="scope-cpu">Scope: 0</span>
+        </div>
+      </div>
+
+      <!-- Tavolo -->
+      <div class="tavolo-wrap">
+        <div class="tavolo-label">Tavolo</div>
+        <div id="tavolo" class="carte-area tavolo"></div>
+      </div>
+
+      <!-- Carte prese dal giocatore -->
+      <div class="prese-row">
+        <div class="prese">
+          <span class="mini-label">Le tue prese</span>
+          <span class="mini-count" id="prese-tu-count">0 carte</span>
+          <span class="mini-count" id="scope-tu">Scope: 0</span>
+        </div>
+      </div>
+
+      <!-- Mano del giocatore -->
+      <div class="mano-wrap">
+        <div class="tavolo-label">La tua mano</div>
+        <div id="mano-tu" class="carte-area mano"></div>
+      </div>
+
+      <div id="messaggio" class="messaggio">Premi «Nuova partita» per iniziare.</div>
+    </section>
+
+    <!-- ===================== RISULTATI ===================== -->
+    <section id="risultati" class="panel">
+      <h2>Risultati</h2>
+
+      <div class="riassunto">
+        <div class="riassunto-box">
+          <span class="big" id="r-vinte-tu">0</span>
+          <span>Partite vinte (Tu)</span>
+        </div>
+        <div class="riassunto-box">
+          <span class="big" id="r-vinte-cpu">0</span>
+          <span>Partite vinte (Computer)</span>
+        </div>
+        <div class="riassunto-box">
+          <span class="big" id="r-totali">0</span>
+          <span>Partite giocate</span>
+        </div>
+      </div>
+
+      <h3>Ultima mano — dettaglio punti</h3>
+      <table class="tabella-punti">
+        <thead>
+          <tr><th>Categoria</th><th>Tu</th><th>Computer</th></tr>
+        </thead>
+        <tbody id="dettaglio-punti">
+          <tr><td colspan="3" class="vuoto">Nessuna mano completata.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Storico partite</h3>
+      <table class="tabella-storico">
+        <thead>
+          <tr><th>#</th><th>Tu</th><th>Computer</th><th>Esito</th></tr>
+        </thead>
+        <tbody id="storico"></tbody>
+      </table>
+
+      <button id="azzera-storico" class="btn">Azzera storico</button>
+    </section>
+
+    <!-- ===================== REGOLE ===================== -->
+    <section id="regole" class="panel">
+      <h2>Regole della Scopa</h2>
+
+      <article class="regole">
+        <h3>Il mazzo</h3>
+        <p>La Scopa si gioca con un mazzo di <b>40 carte</b> italiane, diviso in quattro
+        semi: <b>Denari</b>, <b>Coppe</b>, <b>Spade</b> e <b>Bastoni</b>. Ogni seme ha
+        dieci carte con valori da 1 a 10: Asso (1), dal 2 al 7, Fante (8), Cavallo (9)
+        e Re (10).</p>
+
+        <h3>Preparazione</h3>
+        <p>Si distribuiscono <b>3 carte</b> a ciascun giocatore e si mettono
+        <b>4 carte scoperte</b> sul tavolo. Quando i giocatori hanno esaurito le carte
+        in mano, se ne distribuiscono altre 3 a testa (senza aggiungerne sul tavolo)
+        finché il mazzo non è terminato.</p>
+
+        <h3>Come si gioca</h3>
+        <p>A turno, ogni giocatore gioca una carta dalla propria mano. Con essa può
+        <b>prendere</b> carte dal tavolo:</p>
+        <ul>
+          <li>Se la carta giocata ha lo <b>stesso valore</b> di una carta sul tavolo,
+          la cattura.</li>
+          <li>Se il suo valore è uguale alla <b>somma</b> di più carte sul tavolo,
+          cattura quelle carte.</li>
+          <li><b>Regola della presa singola:</b> se sul tavolo c'è una carta di valore
+          identico a quella giocata, si è obbligati a prendere quella singola carta
+          (non si può scegliere una combinazione).</li>
+          <li>Se non si può prendere nulla, la carta giocata resta sul tavolo.</li>
+        </ul>
+
+        <h3>La Scopa</h3>
+        <p>Quando un giocatore prende <b>tutte</b> le carte rimaste sul tavolo, fa
+        <b>«scopa»</b>: vale <b>1 punto</b> immediato. Non si può fare scopa con
+        l'ultima giocata della partita.</p>
+
+        <h3>Fine partita e ultima presa</h3>
+        <p>Le carte eventualmente rimaste sul tavolo a fine mano vanno all'<b>ultimo
+        giocatore che ha effettuato una presa</b>.</p>
+
+        <h3>Punteggio (1 punto per categoria)</h3>
+        <ul>
+          <li><b>Carte:</b> chi ha preso il maggior numero di carte.</li>
+          <li><b>Denari:</b> chi ha preso più carte di denari.</li>
+          <li><b>Settebello:</b> chi ha preso il <b>7 di denari</b>.</li>
+          <li><b>Primiera:</b> chi ha la migliore combinazione di carte (una per seme).
+          Valori della primiera: 7→21, 6→18, Asso→16, 5→15, 4→14, 3→13, 2→12,
+          figure (8,9,10)→10.</li>
+          <li><b>Scope:</b> 1 punto per ogni scopa realizzata.</li>
+        </ul>
+
+        <h3>Vittoria</h3>
+        <p>In questa app ogni «Nuova partita» distribuisce l'intero mazzo e calcola i
+        punti di una mano. Vince la mano chi totalizza più punti. Lo storico tiene il
+        conto delle partite vinte.</p>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>Scopa · gioco di carte tradizionale italiano</span>
+  </footer>
+
+  <script src="game.js"></script>
+</body>
+</html>
