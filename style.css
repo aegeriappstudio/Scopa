@@ -140,35 +140,23 @@ main { flex: 1; max-width: 1000px; width: 100%; margin: 0 auto; padding: 20px; }
 
 /* ---------- Carte ---------- */
 .carta {
-  width: 72px;
-  height: 104px;
+  width: 74px;
+  aspect-ratio: 331 / 547; /* proporzioni delle carte napoletane */
   background: var(--carta-bg);
   border: 1px solid var(--bordo);
-  border-radius: 9px;
+  border-radius: 8px;
   box-shadow: var(--ombra);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 6px;
   position: relative;
+  overflow: hidden;
   user-select: none;
 }
-.carta .valore { font-size: 1.1rem; font-weight: 800; line-height: 1; }
-.carta .seme-small { font-size: .85rem; font-weight: 800; text-align: right; align-self: flex-end; }
-
-/* Centro carta: icone dei semi (pip) + nome figura */
-.centro { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; overflow: hidden; }
-.centro > div { display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 1px; max-width: 54px; }
-.seme-svg { width: 16px; height: 16px; display: block; }
-.pip-1 .seme-svg { width: 38px; height: 38px; }
-.pip-2 .seme-svg, .pip-3 .seme-svg { width: 18px; height: 18px; }
-.figura { font-size: .58rem; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
-
-/* Colori dei quattro semi originali */
-.carta.denari  .valore, .carta.denari  .seme-small, .carta.denari  .figura { color: #a9791b; }
-.carta.coppe   .valore, .carta.coppe   .seme-small, .carta.coppe   .figura { color: #b3261e; }
-.carta.spade   .valore, .carta.spade   .seme-small, .carta.spade   .figura { color: #1e3a8a; }
-.carta.bastoni .valore, .carta.bastoni .seme-small, .carta.bastoni .figura { color: #6b4423; }
+.carta img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  -webkit-user-drag: none;
+}
 
 .carta.mano-carta { cursor: pointer; transition: transform .12s, box-shadow .12s; }
 .carta.mano-carta:hover { transform: translateY(-10px); box-shadow: 0 10px 18px rgba(0, 0, 0, .35); }
@@ -177,9 +165,14 @@ main { flex: 1; max-width: 1000px; width: 100%; margin: 0 auto; padding: 20px; }
 .carta.settebello::after {
   content: "★";
   position: absolute;
-  top: 3px; right: 5px;
+  top: 2px; right: 2px;
   color: var(--oro);
-  font-size: .9rem;
+  font-size: .8rem;
+  background: rgba(0, 0, 0, .55);
+  border-radius: 50%;
+  width: 16px; height: 16px;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 2;
 }
 
 /* ---------- Messaggio ---------- */
@@ -193,6 +186,30 @@ main { flex: 1; max-width: 1000px; width: 100%; margin: 0 auto; padding: 20px; }
   min-height: 22px;
   font-size: .95rem;
 }
+
+/* ---------- Composizione punti live ---------- */
+.live-punti {
+  margin-top: 14px;
+  background: rgba(255, 255, 255, .96);
+  border-radius: 10px;
+  padding: 4px 14px 12px;
+  box-shadow: var(--ombra);
+}
+.live-punti summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--verde-scuro);
+  padding: 9px 0;
+  list-style: none;
+}
+.live-punti summary::-webkit-details-marker { display: none; }
+.tabella-live { font-size: .88rem; }
+.tabella-live th, .tabella-live td { padding: 6px 10px; }
+.tabella-live td:nth-child(2), .tabella-live td:nth-child(3) { text-align: center; }
+.tabella-live th:nth-child(4), .tabella-live td:nth-child(4) { text-align: center; color: #374151; font-size: .82rem; }
+.tabella-live td.lead { background: #dcfce7; font-weight: 700; color: var(--verde-scuro); }
+.tabella-live tfoot td { border-top: 2px solid var(--verde-scuro); background: #f3f4f6; }
+.live-note { font-size: .78rem; color: #6b7280; margin: 8px 2px 0; line-height: 1.45; }
 
 /* ---------- Risultati ---------- */
 .panel h2 { color: #fff; }
@@ -236,11 +253,7 @@ table tr:last-child td { border-bottom: none; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 600px) {
-  .carta { width: 58px; height: 86px; }
-  .seme-svg { width: 13px; height: 13px; }
-  .pip-1 .seme-svg { width: 30px; height: 30px; }
-  .pip-2 .seme-svg, .pip-3 .seme-svg { width: 15px; height: 15px; }
-  .centro > div { max-width: 44px; }
+  .carta { width: 56px; }
   .scoreboard { grid-template-columns: 1fr; }
   .topbar h1 { font-size: 1.3rem; }
 }

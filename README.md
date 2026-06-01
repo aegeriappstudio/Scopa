@@ -6,11 +6,14 @@ italiano.
 
 ## Funzionalità
 
-- **Gioco** completo Tu vs Computer con mazzo da 40 carte italiane
-  (Denari, Coppe, Spade, Bastoni).
+- **Gioco** completo Tu vs Computer con **carte napoletane** (mazzo da 40:
+  Denari, Coppe, Spade, Bastoni).
 - Logica di presa fedele alle regole, inclusa la **regola della presa singola**
   obbligatoria e le prese per **somma** di più carte.
 - Riconoscimento automatico delle **scope**.
+- **Composizione dei punti in tempo reale**: durante la partita una tabella
+  mostra come si formano i punti (Carte, Denari, Settebello, Primiera, Scope) e
+  a chi andrebbe ciascun punto in quel momento.
 - **Punteggio** completo a fine mano: Carte, Denari, Settebello, Primiera, Scope.
 - Scheda **Risultati**: riepilogo partite vinte, dettaglio punti dell'ultima
   mano e **storico** delle partite (salvato nel browser).
@@ -38,11 +41,19 @@ python3 -m http.server 8000
 
 ## Struttura
 
-| File         | Descrizione                                    |
-|--------------|------------------------------------------------|
-| `index.html` | Struttura della pagina e le tre schede         |
-| `style.css`  | Stile (tavolo verde, carte, tabelle)           |
-| `game.js`    | Logica di gioco, IA del computer e punteggio   |
+| File           | Descrizione                                      |
+|----------------|--------------------------------------------------|
+| `index.html`   | Struttura della pagina e le tre schede           |
+| `style.css`    | Stile (tavolo verde, carte, tabelle)             |
+| `game.js`      | Logica di gioco, IA del computer e punteggio     |
+| `assets/cards/`| Immagini delle carte napoletane (`seme-valore.jpg`) |
+
+## Crediti immagini
+
+Le immagini delle carte napoletane in `assets/cards/` sono di **pubblico
+dominio**, provenienti dalla
+[categoria «Naples deck» di Wikimedia Commons](https://commons.wikimedia.org/wiki/Category:Naples_deck)
+(reperite tramite il progetto [OMerkel/Scopa](https://github.com/OMerkel/Scopa)).
 
 ## Regole in breve
 
