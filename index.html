@@ -67,6 +67,28 @@
       </div>
 
       <div id="messaggio" class="messaggio">Premi «Nuova partita» per iniziare.</div>
+
+      <!-- Composizione punti in tempo reale -->
+      <details class="live-punti" open>
+        <summary>📊 Come si compongono i punti (in tempo reale)</summary>
+        <table class="tabella-live">
+          <thead>
+            <tr><th>Categoria</th><th>Tu</th><th>Computer</th><th>Punto a</th></tr>
+          </thead>
+          <tbody id="live-body">
+            <tr><td colspan="4" class="vuoto">Inizia una partita per vedere i punti.</td></tr>
+          </tbody>
+          <tfoot>
+            <tr><td><b>Totale provvisorio</b></td>
+                <td><b id="live-tot-tu">0</b></td>
+                <td><b id="live-tot-cpu">0</b></td>
+                <td></td></tr>
+          </tfoot>
+        </table>
+        <p class="live-note">Provvisorio: le carte rimaste sul tavolo a fine partita
+          vanno all'ultima presa, quindi «Carte», «Denari» e «Primiera» possono
+          ancora cambiare. Settebello e Scope sono già definitivi.</p>
+      </details>
     </section>
 
     <!-- ===================== RISULTATI ===================== -->
