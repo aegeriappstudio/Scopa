@@ -6,6 +6,8 @@ italiano.
 
 ## Funzionalità
 
+- **Tre lingue** (Italiano, Deutsch, English) con selettore in alto a destra;
+  la scelta viene ricordata nel browser.
 - **Gioco** completo Tu vs Computer con **carte napoletane** (mazzo da 40:
   Denari, Coppe, Spade, Bastoni).
 - Logica di presa fedele alle regole, inclusa la **regola della presa singola**
@@ -46,6 +48,7 @@ python3 -m http.server 8000
 | `index.html`   | Struttura della pagina e le tre schede           |
 | `style.css`    | Stile (tavolo verde, carte, tabelle)             |
 | `game.js`      | Logica di gioco, IA del computer e punteggio     |
+| `i18n.js`      | Traduzioni IT/DE/EN e nomi delle carte           |
 | `assets/cards/`| Immagini delle carte napoletane (`seme-valore.jpg`) |
 
 ## Crediti immagini

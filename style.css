@@ -50,6 +50,23 @@ body {
 .tab:hover { background: rgba(255, 255, 255, .12); }
 .tab.active { background: var(--oro); color: #1a1a1a; border-color: var(--oro); font-weight: 600; }
 
+.topbar-right { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.lang-switch { display: flex; gap: 4px; }
+.lang-btn {
+  background: transparent;
+  color: #d9f2e0;
+  border: 1px solid rgba(255, 255, 255, .35);
+  padding: 6px 9px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .5px;
+  transition: all .15s;
+}
+.lang-btn:hover { background: rgba(255, 255, 255, .12); }
+.lang-btn.active { background: #fff; color: var(--verde-scuro); border-color: #fff; }
+
 /* ---------- Layout ---------- */
 main { flex: 1; max-width: 1000px; width: 100%; margin: 0 auto; padding: 20px; }
 .panel { display: none; animation: fade .2s ease; }
