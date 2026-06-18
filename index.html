@@ -9,11 +9,18 @@
 <body>
   <header class="topbar">
     <h1>🃏 Scopa</h1>
-    <nav class="tabs">
-      <button class="tab active" data-tab="gioco">Gioco</button>
-      <button class="tab" data-tab="risultati">Risultati</button>
-      <button class="tab" data-tab="regole">Regole</button>
-    </nav>
+    <div class="topbar-right">
+      <nav class="tabs">
+        <button class="tab active" data-tab="gioco" data-i18n="tab_gioco">Gioco</button>
+        <button class="tab" data-tab="risultati" data-i18n="tab_risultati">Risultati</button>
+        <button class="tab" data-tab="regole" data-i18n="tab_regole">Regole</button>
+      </nav>
+      <div class="lang-switch" title="Lingua / Sprache / Language">
+        <button class="lang-btn" data-lang="it">IT</button>
+        <button class="lang-btn" data-lang="de">DE</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+      </div>
+    </div>
   </header>
 
   <main>
@@ -21,48 +28,48 @@
     <section id="gioco" class="panel active">
       <div class="scoreboard">
         <div class="score-card you">
-          <span class="label">Tu</span>
+          <span class="label" data-i18n="label_you">Tu</span>
           <span id="punti-tu" class="punti">0</span>
-          <span class="dettaglio">Partite: <b id="vinte-tu">0</b></span>
+          <span class="dettaglio"><span data-i18n="games_label">Partite:</span> <b id="vinte-tu">0</b></span>
         </div>
         <div class="score-mid">
-          <div class="mazzo-info">Mazzo: <b id="mazzo-count">40</b></div>
-          <button id="nuova-partita" class="btn primary">Nuova partita</button>
+          <div class="mazzo-info"><span data-i18n="deck_label">Mazzo:</span> <b id="mazzo-count">40</b></div>
+          <button id="nuova-partita" class="btn primary" data-i18n="btn_new">Nuova partita</button>
         </div>
         <div class="score-card cpu">
-          <span class="label">Computer</span>
+          <span class="label" data-i18n="label_cpu">Computer</span>
           <span id="punti-cpu" class="punti">0</span>
-          <span class="dettaglio">Partite: <b id="vinte-cpu">0</b></span>
+          <span class="dettaglio"><span data-i18n="games_label">Partite:</span> <b id="vinte-cpu">0</b></span>
         </div>
       </div>
 
       <!-- Carte prese dal computer -->
       <div class="prese-row">
         <div class="prese">
-          <span class="mini-label">Prese Computer</span>
-          <span class="mini-count" id="prese-cpu-count">0 carte</span>
+          <span class="mini-label" data-i18n="prese_cpu">Prese Computer</span>
+          <span class="mini-count" id="prese-cpu-count">0</span>
           <span class="mini-count" id="scope-cpu">Scope: 0</span>
         </div>
       </div>
 
       <!-- Tavolo -->
       <div class="tavolo-wrap">
-        <div class="tavolo-label">Tavolo</div>
+        <div class="tavolo-label" data-i18n="table_label">Tavolo</div>
         <div id="tavolo" class="carte-area tavolo"></div>
       </div>
 
       <!-- Carte prese dal giocatore -->
       <div class="prese-row">
         <div class="prese">
-          <span class="mini-label">Le tue prese</span>
-          <span class="mini-count" id="prese-tu-count">0 carte</span>
+          <span class="mini-label" data-i18n="prese_you">Le tue prese</span>
+          <span class="mini-count" id="prese-tu-count">0</span>
           <span class="mini-count" id="scope-tu">Scope: 0</span>
         </div>
       </div>
 
       <!-- Mano del giocatore -->
       <div class="mano-wrap">
-        <div class="tavolo-label">La tua mano</div>
+        <div class="tavolo-label" data-i18n="hand_label">La tua mano</div>
         <div id="mano-tu" class="carte-area mano"></div>
       </div>
 
@@ -70,22 +77,22 @@
 
       <!-- Composizione punti in tempo reale -->
       <details class="live-punti" open>
-        <summary>📊 Come si compongono i punti (in tempo reale)</summary>
+        <summary data-i18n="live_summary">📊 Come si compongono i punti (in tempo reale)</summary>
         <table class="tabella-live">
           <thead>
-            <tr><th>Categoria</th><th>Tu</th><th>Computer</th><th>Punto a</th></tr>
+            <tr><th data-i18n="live_cat">Categoria</th><th data-i18n="col_you">Tu</th><th data-i18n="col_cpu">Computer</th><th data-i18n="live_to">Punto a</th></tr>
           </thead>
           <tbody id="live-body">
-            <tr><td colspan="4" class="vuoto">Inizia una partita per vedere i punti.</td></tr>
+            <tr><td colspan="4" class="vuoto" data-i18n="live_empty">Inizia una partita per vedere i punti.</td></tr>
           </tbody>
           <tfoot>
-            <tr><td><b>Totale provvisorio</b></td>
+            <tr><td><b data-i18n="live_total">Totale provvisorio</b></td>
                 <td><b id="live-tot-tu">0</b></td>
                 <td><b id="live-tot-cpu">0</b></td>
                 <td></td></tr>
           </tfoot>
         </table>
-        <p class="live-note">Provvisorio: le carte rimaste sul tavolo a fine partita
+        <p class="live-note" data-i18n="live_note">Provvisorio: le carte rimaste sul tavolo a fine partita
           vanno all'ultima presa, quindi «Carte», «Denari» e «Primiera» possono
           ancora cambiare. Settebello e Scope sono già definitivi.</p>
       </details>
@@ -93,107 +100,55 @@
 
     <!-- ===================== RISULTATI ===================== -->
     <section id="risultati" class="panel">
-      <h2>Risultati</h2>
+      <h2 data-i18n="res_title">Risultati</h2>
 
       <div class="riassunto">
         <div class="riassunto-box">
           <span class="big" id="r-vinte-tu">0</span>
-          <span>Partite vinte (Tu)</span>
+          <span data-i18n="res_won_you">Partite vinte (Tu)</span>
         </div>
         <div class="riassunto-box">
           <span class="big" id="r-vinte-cpu">0</span>
-          <span>Partite vinte (Computer)</span>
+          <span data-i18n="res_won_cpu">Partite vinte (Computer)</span>
         </div>
         <div class="riassunto-box">
           <span class="big" id="r-totali">0</span>
-          <span>Partite giocate</span>
+          <span data-i18n="res_played">Partite giocate</span>
         </div>
       </div>
 
-      <h3>Ultima mano — dettaglio punti</h3>
+      <h3 data-i18n="res_last_detail">Ultima mano — dettaglio punti</h3>
       <table class="tabella-punti">
         <thead>
-          <tr><th>Categoria</th><th>Tu</th><th>Computer</th></tr>
+          <tr><th data-i18n="live_cat">Categoria</th><th data-i18n="col_you">Tu</th><th data-i18n="col_cpu">Computer</th></tr>
         </thead>
         <tbody id="dettaglio-punti">
-          <tr><td colspan="3" class="vuoto">Nessuna mano completata.</td></tr>
+          <tr><td colspan="3" class="vuoto" data-i18n="res_no_hand">Nessuna mano completata.</td></tr>
         </tbody>
       </table>
 
-      <h3>Storico partite</h3>
+      <h3 data-i18n="res_history">Storico partite</h3>
       <table class="tabella-storico">
         <thead>
-          <tr><th>#</th><th>Tu</th><th>Computer</th><th>Esito</th></tr>
+          <tr><th data-i18n="res_num">#</th><th data-i18n="col_you">Tu</th><th data-i18n="col_cpu">Computer</th><th data-i18n="res_outcome">Esito</th></tr>
         </thead>
         <tbody id="storico"></tbody>
       </table>
 
-      <button id="azzera-storico" class="btn">Azzera storico</button>
+      <button id="azzera-storico" class="btn" data-i18n="btn_reset">Azzera storico</button>
     </section>
 
     <!-- ===================== REGOLE ===================== -->
     <section id="regole" class="panel">
-      <h2>Regole della Scopa</h2>
-
-      <article class="regole">
-        <h3>Il mazzo</h3>
-        <p>La Scopa si gioca con un mazzo di <b>40 carte</b> italiane, diviso in quattro
-        semi: <b>Denari</b>, <b>Coppe</b>, <b>Spade</b> e <b>Bastoni</b>. Ogni seme ha
-        dieci carte con valori da 1 a 10: Asso (1), dal 2 al 7, Fante (8), Cavallo (9)
-        e Re (10).</p>
-
-        <h3>Preparazione</h3>
-        <p>Si distribuiscono <b>3 carte</b> a ciascun giocatore e si mettono
-        <b>4 carte scoperte</b> sul tavolo. Quando i giocatori hanno esaurito le carte
-        in mano, se ne distribuiscono altre 3 a testa (senza aggiungerne sul tavolo)
-        finché il mazzo non è terminato.</p>
-
-        <h3>Come si gioca</h3>
-        <p>A turno, ogni giocatore gioca una carta dalla propria mano. Con essa può
-        <b>prendere</b> carte dal tavolo:</p>
-        <ul>
-          <li>Se la carta giocata ha lo <b>stesso valore</b> di una carta sul tavolo,
-          la cattura.</li>
-          <li>Se il suo valore è uguale alla <b>somma</b> di più carte sul tavolo,
-          cattura quelle carte.</li>
-          <li><b>Regola della presa singola:</b> se sul tavolo c'è una carta di valore
-          identico a quella giocata, si è obbligati a prendere quella singola carta
-          (non si può scegliere una combinazione).</li>
-          <li>Se non si può prendere nulla, la carta giocata resta sul tavolo.</li>
-        </ul>
-
-        <h3>La Scopa</h3>
-        <p>Quando un giocatore prende <b>tutte</b> le carte rimaste sul tavolo, fa
-        <b>«scopa»</b>: vale <b>1 punto</b> immediato. Non si può fare scopa con
-        l'ultima giocata della partita.</p>
-
-        <h3>Fine partita e ultima presa</h3>
-        <p>Le carte eventualmente rimaste sul tavolo a fine mano vanno all'<b>ultimo
-        giocatore che ha effettuato una presa</b>.</p>
-
-        <h3>Punteggio (1 punto per categoria)</h3>
-        <ul>
-          <li><b>Carte:</b> chi ha preso il maggior numero di carte.</li>
-          <li><b>Denari:</b> chi ha preso più carte di denari.</li>
-          <li><b>Settebello:</b> chi ha preso il <b>7 di denari</b>.</li>
-          <li><b>Primiera:</b> chi ha la migliore combinazione di carte (una per seme).
-          Valori della primiera: 7→21, 6→18, Asso→16, 5→15, 4→14, 3→13, 2→12,
-          figure (8,9,10)→10.</li>
-          <li><b>Scope:</b> 1 punto per ogni scopa realizzata.</li>
-        </ul>
-
-        <h3>Vittoria</h3>
-        <p>In questa app ogni «Nuova partita» distribuisce l'intero mazzo e calcola i
-        punti di una mano. Vince la mano chi totalizza più punti. Lo storico tiene il
-        conto delle partite vinte.</p>
-      </article>
+      <article class="regole" data-i18n="rules"></article>
     </section>
   </main>
 
   <footer class="footer">
-    <span>Scopa · gioco di carte tradizionale italiano</span>
+    <span data-i18n="footer">Scopa · gioco di carte tradizionale italiano</span>
   </footer>
 
+  <script src="i18n.js"></script>
   <script src="game.js"></script>
 </body>
 </html>

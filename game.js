@@ -7,9 +7,8 @@
 
 /* ---------- Costanti ---------- */
 const SEMI = ["denari", "coppe", "spade", "bastoni"];
-const NOME_SEME = { denari: "Denari", coppe: "Coppe", spade: "Spade", bastoni: "Bastoni" };
-const NOME_VALORE = { 1: "Asso", 8: "Fante", 9: "Cavallo", 10: "Re" };
 const PRIMIERA = { 1: 16, 2: 12, 3: 13, 4: 14, 5: 15, 6: 18, 7: 21, 8: 10, 9: 10, 10: 10 };
+// I nomi delle carte e tutte le stringhe sono in i18n.js (cardName, t()).
 
 /* ---------- Stato ---------- */
 let S = null; // stato della partita corrente
@@ -77,7 +76,7 @@ function nuovaPartita() {
     fine: false,
   };
   render();
-  setMsg("Tocca a te. Seleziona una carta dalla tua mano.");
+  setMsg(t("turn_you") + " " + t("select_hand"));
 }
 
 function distribuisciGiro() {
@@ -96,7 +95,7 @@ function giocaCarta(player, carta, setPresa) {
   // rimuovi la carta dalla mano
   S.mani[player] = S.mani[player].filter((c) => c.id !== carta.id);
 
-  let descr;
+  const nome = player === "tu" ? t("label_you") : t("label_cpu");
   if (setPresa && setPresa.length) {
     const noScopa = ultimaGiocataDellaPartita();
     const ids = new Set(setPresa.map((c) => c.id));
@@ -104,27 +103,19 @@ function giocaCarta(player, carta, setPresa) {
     S.prese[player].push(carta, ...setPresa);
     S.ultimaPresa = player;
 
+    const vars = { name: nome, card: descrCarta(carta), set: descrSet(setPresa) };
     if (S.tavolo.length === 0 && !noScopa) {
       S.scope[player]++;
-      descr = `gioca ${descrCarta(carta)}, prende ${descrSet(setPresa)} e fa SCOPA! ✨`;
-    } else {
-      descr = `gioca ${descrCarta(carta)} e prende ${descrSet(setPresa)}.`;
+      return t("move_scopa", vars);
     }
-  } else {
-    S.tavolo.push(carta);
-    descr = `cala ${descrCarta(carta)} sul tavolo.`;
+    return t("move_capture", vars);
   }
-  const chi = player === "tu" ? "Tu" : "Computer";
-  return `${chi} ${descr}`;
+  S.tavolo.push(carta);
+  return t("move_drop", { name: nome, card: descrCarta(carta) });
 }
 
-function descrCarta(c) {
-  const nome = NOME_VALORE[c.v] || c.v;
-  return `${nome} di ${NOME_SEME[c.seme]}`;
-}
-function descrSet(set) {
-  return set.map(descrCarta).join(" + ");
-}
+function descrCarta(c) { return cardName(c); }
+function descrSet(set) { return set.map(descrCarta).join(" + "); }
 
 /* ---------- Flusso dei turni ---------- */
 function dopoMossa(player, messaggio) {
@@ -144,10 +135,10 @@ function dopoMossa(player, messaggio) {
   render();
 
   if (S.turno === "cpu" && !S.fine) {
-    setMsg(messaggio + "  Tocca al Computer…");
+    setMsg(messaggio + "  " + t("turn_cpu"));
     setTimeout(mossaCpu, 850);
   } else {
-    setMsg(messaggio + "  Tocca a te.");
+    setMsg(messaggio + "  " + t("turn_you"));
   }
 }
 
@@ -158,16 +149,16 @@ function selezionaMano(idx) {
   S.selTavolo.clear();
   render();
 
-  if (S.selHand === null) { setMsg("Seleziona una carta dalla tua mano."); return; }
+  if (S.selHand === null) { setMsg(t("select_hand")); return; }
 
   const carta = S.mani.tu[S.selHand];
   const sets = setDiPresaValidi(carta, S.tavolo);
   if (sets.length === 0) {
-    setMsg(`Con ${descrCarta(carta)} non puoi prendere nulla. Clicca di nuovo la carta per calarla sul tavolo.`);
+    setMsg(t("no_take", { card: descrCarta(carta) }));
   } else if (sets.some((s) => s.length === 1)) {
-    setMsg(`Devi prendere una carta singola: clicca la carta verde sul tavolo.`);
+    setMsg(t("must_single"));
   } else {
-    setMsg(`Seleziona sul tavolo le carte da prendere (somma ${carta.v}).`);
+    setMsg(t("select_sum", { n: carta.v }));
   }
 }
 
@@ -190,7 +181,7 @@ function clickTavolo(id) {
     const msg = giocaCarta("tu", carta, match);
     dopoMossa("tu", msg);
   } else {
-    setMsg(`Selezione: ${S.selTavolo.size} carta/e. Continua fino alla somma ${carta.v}.`);
+    setMsg(t("selection_progress", { n: S.selTavolo.size, v: carta.v }));
   }
 }
 
@@ -199,7 +190,7 @@ function calaSelezionata() {
   const carta = S.mani.tu[S.selHand];
   const sets = setDiPresaValidi(carta, S.tavolo);
   if (sets.length > 0) {
-    setMsg("Hai una presa disponibile: prendi le carte evidenziate sul tavolo.");
+    setMsg(t("have_take"));
     return;
   }
   const msg = giocaCarta("tu", carta, null);
@@ -265,14 +256,17 @@ function fineMano(messaggio) {
 
   const pt = calcolaPunti();
   registraRisultato(pt);
+  _ultimoPt = pt;
   render();
   renderRisultati(pt);
+  setMsg(messaggioFine(pt));
+}
 
-  let esito;
-  if (pt.totaleTu > pt.totaleCpu) esito = "Hai vinto la mano! 🎉";
-  else if (pt.totaleTu < pt.totaleCpu) esito = "Ha vinto il Computer.";
-  else esito = "Pareggio!";
-  setMsg(`Mano terminata — Tu ${pt.totaleTu} : ${pt.totaleCpu} Computer. ${esito} Premi «Nuova partita».`);
+function messaggioFine(pt) {
+  const esito = pt.totaleTu > pt.totaleCpu ? t("esito_win")
+              : pt.totaleTu < pt.totaleCpu ? t("esito_lose")
+              : t("esito_draw");
+  return t("hand_over", { a: pt.totaleTu, b: pt.totaleCpu, esito });
 }
 
 function statistiche(carte) {
@@ -354,10 +348,10 @@ function render() {
   el("vinte-cpu").textContent = persist.vinteCpu;
 
   // prese
-  el("prese-tu-count").textContent = `${S.prese.tu.length} carte`;
-  el("prese-cpu-count").textContent = `${S.prese.cpu.length} carte`;
-  el("scope-tu").textContent = `Scope: ${S.scope.tu}`;
-  el("scope-cpu").textContent = `Scope: ${S.scope.cpu}`;
+  el("prese-tu-count").textContent = t("n_cards", { n: S.prese.tu.length });
+  el("prese-cpu-count").textContent = t("n_cards", { n: S.prese.cpu.length });
+  el("scope-tu").textContent = t("scope_label", { n: S.scope.tu });
+  el("scope-cpu").textContent = t("scope_label", { n: S.scope.cpu });
 
   // carte prendibili
   let prendibili = new Set();
@@ -399,7 +393,8 @@ function render() {
 
 // Tabella "composizione punti in tempo reale" nella scheda Gioco.
 function renderLivePunti(pt) {
-  const freccia = (a, b) => a ? "Tu ◀" : (b ? "Computer ▶" : "—");
+  const si = t("yes") + " ★";
+  const freccia = (a, b) => a ? t("col_you") + " ◀" : (b ? t("col_cpu") + " ▶" : "—");
   const riga = (nome, tu, cpu, vTu, vCpu) =>
     `<tr><td>${nome}</td>
        <td class="${vTu ? 'lead' : ''}">${tu}</td>
@@ -407,11 +402,11 @@ function renderLivePunti(pt) {
        <td>${freccia(vTu, vCpu)}</td></tr>`;
 
   el("live-body").innerHTML = [
-    riga("Carte prese", pt.stat.tu.carte, pt.stat.cpu.carte, pt.tu.carte, pt.cpu.carte),
-    riga("Denari", pt.stat.tu.denari, pt.stat.cpu.denari, pt.tu.denari, pt.cpu.denari),
-    riga("Settebello (7♦)", pt.stat.tu.settebello ? "Sì ★" : "—", pt.stat.cpu.settebello ? "Sì ★" : "—", pt.tu.settebello, pt.cpu.settebello),
-    riga("Primiera", pt.stat.tu.primiera, pt.stat.cpu.primiera, pt.tu.primiera, pt.cpu.primiera),
-    riga("Scope", pt.tu.scope, pt.cpu.scope, pt.tu.scope > pt.cpu.scope, pt.cpu.scope > pt.tu.scope),
+    riga(t("cat_carte_taken"), pt.stat.tu.carte, pt.stat.cpu.carte, pt.tu.carte, pt.cpu.carte),
+    riga(t("cat_denari"), pt.stat.tu.denari, pt.stat.cpu.denari, pt.tu.denari, pt.cpu.denari),
+    riga(t("cat_settebello7"), pt.stat.tu.settebello ? si : "—", pt.stat.cpu.settebello ? si : "—", pt.tu.settebello, pt.cpu.settebello),
+    riga(t("cat_primiera"), pt.stat.tu.primiera, pt.stat.cpu.primiera, pt.tu.primiera, pt.cpu.primiera),
+    riga(t("cat_scope"), pt.tu.scope, pt.cpu.scope, pt.tu.scope > pt.cpu.scope, pt.cpu.scope > pt.tu.scope),
   ].join("");
   el("live-tot-tu").textContent = pt.totaleTu;
   el("live-tot-cpu").textContent = pt.totaleCpu;
@@ -426,13 +421,14 @@ function renderRisultati(pt) {
        <td class="${vTu ? 'esito-vinta' : ''}">${tu}</td>
        <td class="${vCpu ? 'esito-vinta' : ''}">${cpu}</td></tr>`;
 
+  const si = t("yes") + " ★";
   const body = [
-    r("Carte", pt.stat.tu.carte, pt.stat.cpu.carte, pt.tu.carte, pt.cpu.carte),
-    r("Denari", pt.stat.tu.denari, pt.stat.cpu.denari, pt.tu.denari, pt.cpu.denari),
-    r("Settebello", pt.stat.tu.settebello ? "Sì ★" : "—", pt.stat.cpu.settebello ? "Sì ★" : "—", pt.tu.settebello, pt.cpu.settebello),
-    r("Primiera", pt.stat.tu.primiera, pt.stat.cpu.primiera, pt.tu.primiera, pt.cpu.primiera),
-    r("Scope", pt.tu.scope, pt.cpu.scope, pt.tu.scope > pt.cpu.scope, pt.cpu.scope > pt.tu.scope),
-    `<tr><td><b>TOTALE PUNTI</b></td>
+    r(t("cat_carte"), pt.stat.tu.carte, pt.stat.cpu.carte, pt.tu.carte, pt.cpu.carte),
+    r(t("cat_denari"), pt.stat.tu.denari, pt.stat.cpu.denari, pt.tu.denari, pt.cpu.denari),
+    r(t("cat_settebello"), pt.stat.tu.settebello ? si : "—", pt.stat.cpu.settebello ? si : "—", pt.tu.settebello, pt.cpu.settebello),
+    r(t("cat_primiera"), pt.stat.tu.primiera, pt.stat.cpu.primiera, pt.tu.primiera, pt.cpu.primiera),
+    r(t("cat_scope"), pt.tu.scope, pt.cpu.scope, pt.tu.scope > pt.cpu.scope, pt.cpu.scope > pt.tu.scope),
+    `<tr><td><b>${t("total_points")}</b></td>
        <td><b>${pt.totaleTu}</b></td><td><b>${pt.totaleCpu}</b></td></tr>`,
   ].join("");
   el("dettaglio-punti").innerHTML = body;
@@ -440,10 +436,10 @@ function renderRisultati(pt) {
 
 function renderStorico() {
   const st = persist.storico;
-  if (!st.length) { el("storico").innerHTML = `<tr><td colspan="4" class="vuoto">Nessuna partita giocata.</td></tr>`; return; }
+  if (!st.length) { el("storico").innerHTML = `<tr><td colspan="4" class="vuoto">${t("no_games")}</td></tr>`; return; }
   el("storico").innerHTML = st.map((g, i) => {
     const cls = g.esito === "vinta" ? "esito-vinta" : g.esito === "persa" ? "esito-persa" : "esito-pari";
-    const txt = g.esito === "vinta" ? "Vinta" : g.esito === "persa" ? "Persa" : "Pari";
+    const txt = g.esito === "vinta" ? t("outcome_won") : g.esito === "persa" ? t("outcome_lost") : t("outcome_draw");
     return `<tr><td>${st.length - i}</td><td>${g.tu}</td><td>${g.cpu}</td><td class="${cls}">${txt}</td></tr>`;
   }).join("");
 }
@@ -462,19 +458,45 @@ function initUI() {
 
   el("nuova-partita").addEventListener("click", nuovaPartita);
   el("azzera-storico").addEventListener("click", () => {
-    if (confirm("Vuoi azzerare tutto lo storico e i risultati?")) {
+    if (confirm(t("confirm_reset"))) {
       persist.vinteTu = 0; persist.vinteCpu = 0; persist.storico = [];
       _ultimoPt = null;
-      el("dettaglio-punti").innerHTML = `<tr><td colspan="3" class="vuoto">Nessuna mano completata.</td></tr>`;
+      el("dettaglio-punti").innerHTML = `<tr><td colspan="3" class="vuoto">${t("res_no_hand")}</td></tr>`;
       if (S) render(); else { renderStorico(); el("r-vinte-tu").textContent = 0; el("r-vinte-cpu").textContent = 0; el("r-totali").textContent = 0; }
     }
   });
 
-  // stato iniziale dei pannelli risultati
+  // selettore di lingua
+  document.querySelectorAll(".lang-btn").forEach((b) =>
+    b.addEventListener("click", () => changeLang(b.dataset.lang)));
+
+  // applica la lingua salvata e disegna lo stato iniziale
+  applyStaticI18n();
+  setMsg(t("press_new"));
   renderStorico();
   el("r-vinte-tu").textContent = persist.vinteTu;
   el("r-vinte-cpu").textContent = persist.vinteCpu;
   el("r-totali").textContent = persist.storico.length;
+}
+
+// Cambio lingua: ri-traduce le stringhe statiche e ridisegna le parti dinamiche.
+function changeLang(lang) {
+  LANG = lang;
+  localStorage.setItem("scopa_lang", lang);
+  applyStaticI18n();
+
+  if (S) {
+    render();
+    // messaggio coerente con lo stato attuale
+    if (S.fine && _ultimoPt) setMsg(messaggioFine(_ultimoPt));
+    else if (S.turno === "cpu") setMsg(t("turn_cpu"));
+    else setMsg(S.selHand === null ? t("select_hand") : t("turn_you"));
+  } else {
+    setMsg(t("press_new"));
+  }
+
+  // dettaglio ultima mano
+  if (_ultimoPt) renderRisultati(_ultimoPt);
 }
 
 document.addEventListener("DOMContentLoaded", initUI);
