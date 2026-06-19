@@ -10,11 +10,13 @@ const VAL_NOMI = {
   it: { 1: "Asso", 8: "Fante", 9: "Cavallo", 10: "Re" },
   de: { 1: "Ass", 8: "Bube", 9: "Reiter", 10: "König" },
   en: { 1: "Ace", 8: "Jack", 9: "Knight", 10: "King" },
+  fr: { 1: "As", 8: "Valet", 9: "Cavalier", 10: "Roi" },
 };
 const SEME_NOMI = {
   it: { denari: "Denari", coppe: "Coppe", spade: "Spade", bastoni: "Bastoni" },
   de: { denari: "Münzen", coppe: "Kelche", spade: "Schwerter", bastoni: "Stäbe" },
   en: { denari: "Coins", coppe: "Cups", spade: "Swords", bastoni: "Batons" },
+  fr: { denari: "Deniers", coppe: "Coupes", spade: "Épées", bastoni: "Bâtons" },
 };
 
 function valNome(v) { return (VAL_NOMI[LANG] && VAL_NOMI[LANG][v]) || v; }
@@ -23,6 +25,7 @@ function cardName(c) {
   const v = valNome(c.v), s = semeNome(c.seme);
   if (LANG === "it") return `${v} di ${s}`;
   if (LANG === "en") return `${v} of ${s}`;
+  if (LANG === "fr") { const el = /^[AEIOUYÉÈÀÂÊÎÔÛHaeiou]/.test(s) ? "d'" : "de "; return `${v} ${el}${s}`; }
   return `${v} ${s}`; // de
 }
 
@@ -228,6 +231,74 @@ const TR = {
         <li><b>Settebello:</b> whoever took the <b>7 of coins</b>.</li>
         <li><b>Primiera:</b> best combination (one card per suit). Values: 7→21, 6→18, Ace→16, 5→15, 4→14, 3→13, 2→12, face cards→10.</li>
         <li><b>Scope:</b> 1 point per scopa.</li>
+      </ul>`,
+  },
+
+  /* ---------------- Français ---------------- */
+  fr: {
+    title: "Scopa — Jeu de cartes italien",
+    tab_gioco: "Jeu", tab_risultati: "Résultats", tab_regole: "Règles",
+    label_you: "Toi", label_cpu: "Ordinateur",
+    games_label: "Parties :", deck_label: "Pioche :", btn_new: "Nouvelle partie",
+    prese_cpu: "Prises Ordinateur", prese_you: "Tes prises",
+    table_label: "Table", hand_label: "Ta main",
+    live_summary: "📊 Comment les points se forment (en direct)",
+    live_cat: "Catégorie", col_you: "Toi", col_cpu: "Ordinateur", live_to: "Point à",
+    live_empty: "Commence une partie pour voir les points.",
+    live_total: "Total provisoire",
+    live_note: "Provisoire : les cartes restées sur la table à la fin vont à la dernière prise, donc «Cartes», «Deniers» et «Primiera» peuvent encore changer. Settebello et Scope sont déjà définitifs.",
+    res_title: "Résultats",
+    res_won_you: "Parties gagnées (Toi)", res_won_cpu: "Parties gagnées (Ordinateur)", res_played: "Parties jouées",
+    res_last_detail: "Dernière manche — détail des points",
+    res_no_hand: "Aucune manche terminée.",
+    res_history: "Historique des parties", res_num: "#", res_outcome: "Résultat",
+    btn_reset: "Effacer l'historique", no_games: "Aucune partie jouée.",
+    confirm_reset: "Veux-tu effacer tout l'historique et les résultats ?",
+    cat_carte_taken: "Cartes prises", cat_carte: "Cartes", cat_denari: "Deniers",
+    cat_settebello7: "Settebello (7♦)", cat_settebello: "Settebello",
+    cat_primiera: "Primiera", cat_scope: "Scope", total_points: "TOTAL DES POINTS",
+    yes: "Oui",
+    outcome_won: "Gagnée", outcome_lost: "Perdue", outcome_draw: "Nulle",
+    n_cards: "{n} cartes", scope_label: "Scope : {n}",
+    press_new: "Appuie sur «Nouvelle partie» pour commencer.",
+    select_hand: "Choisis une carte dans ta main.",
+    no_take: "Avec {card} tu ne peux rien prendre. Clique de nouveau la carte pour la poser sur la table.",
+    must_single: "Tu dois prendre une seule carte : clique la carte verte sur la table.",
+    select_sum: "Choisis sur la table les cartes à prendre (somme {n}).",
+    selection_progress: "Sélection : {n} carte(s). Continue jusqu'à la somme {v}.",
+    have_take: "Tu as une prise possible : prends les cartes en surbrillance.",
+    move_scopa: "{name} joue {card}, prend {set} et fait SCOPA ! ✨",
+    move_capture: "{name} joue {card} et prend {set}.",
+    move_drop: "{name} pose {card} sur la table.",
+    turn_you: "À toi de jouer.", turn_cpu: "Au tour de l'ordinateur…",
+    esito_win: "Tu as gagné la manche ! 🎉", esito_lose: "L'ordinateur a gagné.", esito_draw: "Égalité !",
+    hand_over: "Manche terminée — Toi {a} : {b} Ordinateur. {esito} Appuie sur «Nouvelle partie».",
+    footer: "Scopa · jeu de cartes traditionnel italien",
+    rules: `
+      <h2>Règles de la Scopa</h2>
+      <h3>Le jeu de cartes</h3>
+      <p>La Scopa se joue avec un jeu de <b>40 cartes</b> italiennes (ici napolitaines), réparties en quatre couleurs : <b>Deniers</b>, <b>Coupes</b>, <b>Épées</b> et <b>Bâtons</b>. Chaque couleur compte dix cartes : As (1), du 2 au 7, Valet (8), Cavalier (9) et Roi (10).</p>
+      <h3>Préparation</h3>
+      <p>On distribue <b>3 cartes</b> à chaque joueur et <b>4 cartes face visible</b> sur la table. Une fois les cartes en main épuisées, on en distribue 3 de plus à chacun jusqu'à épuisement de la pioche.</p>
+      <h3>Comment jouer</h3>
+      <p>À tour de rôle, on joue une carte de sa main pour <b>prendre</b> des cartes sur la table :</p>
+      <ul>
+        <li>Si la carte a la <b>même valeur</b> qu'une carte de la table, elle la capture.</li>
+        <li>Si sa valeur égale la <b>somme</b> de plusieurs cartes, elle les capture.</li>
+        <li><b>Prise unique :</b> s'il y a une carte isolée de même valeur, on doit prendre cette carte unique.</li>
+        <li>Si on ne peut rien prendre, la carte reste sur la table.</li>
+      </ul>
+      <h3>La Scopa</h3>
+      <p>Prendre <b>toutes</b> les cartes de la table vaut une <b>Scopa</b> = <b>1 point</b>. Pas de scopa au dernier coup.</p>
+      <h3>Fin de partie</h3>
+      <p>Les cartes restées sur la table vont au <b>dernier joueur ayant fait une prise</b>.</p>
+      <h3>Décompte (1 point chacun)</h3>
+      <ul>
+        <li><b>Cartes :</b> celui qui a pris le plus de cartes.</li>
+        <li><b>Deniers :</b> celui qui a pris le plus de deniers.</li>
+        <li><b>Settebello :</b> celui qui a pris le <b>7 de deniers</b>.</li>
+        <li><b>Primiera :</b> meilleure combinaison (une carte par couleur). Valeurs : 7→21, 6→18, As→16, 5→15, 4→14, 3→13, 2→12, figures→10.</li>
+        <li><b>Scope :</b> 1 point par scopa.</li>
       </ul>`,
   },
 };
